@@ -55,7 +55,7 @@ class _CryptoPulseState extends State<CryptoPulse> {
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
-              )
+              ),
             ],
           ),
         ),
