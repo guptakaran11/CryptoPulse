@@ -7,7 +7,7 @@ import '../../Model/cryptoDataModel.dart';
 
 class CryptoDataProvider with ChangeNotifier {
   bool isloading = true;
-  List<CryptoDataModel> markets = [];
+  List<CryptoDataModel> cryptoData = [];
 
   CryptoDataProvider() {
     fetchData();
@@ -23,7 +23,7 @@ class CryptoDataProvider with ChangeNotifier {
       temp.add(newCrypto);
     }
 
-    markets = temp;
+    cryptoData = temp;
     isloading = false;
     notifyListeners();
   }
