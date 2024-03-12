@@ -1,8 +1,6 @@
 // ignore_for_file: file_names
-
 import 'package:cryptopulse/Controller/services/get_data.dart';
 import 'package:flutter/material.dart';
-
 import '../../Model/cryptoDataModel.dart';
 
 class CryptoDataProvider with ChangeNotifier {
