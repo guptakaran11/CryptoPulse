@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cryptopulse/Controller/provider/cryptoProvider.dart';
 import 'package:cryptopulse/Model/cryptoDataModel.dart';
 import 'package:flutter/material.dart';
@@ -45,36 +47,38 @@ class _CryptoPulseState extends State<CryptoPulse> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: 5.w,
-              vertical: 1.h,
-            ),
-            child: Column(
-              children: [
-                const Text(
-                  'Hello! 👋',
-                  style: TextStyle(
-                    fontSize: 30,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
+      body: SafeArea(
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: 5.w,
+            vertical: 1.h,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Hello! 👋',
+                style: TextStyle(
+                  fontSize: 30,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
                 ),
-                SizedBox(
-                  height: 2.h,
-                ),
-                Consumer<CryptoDataProvider>(
-                  builder: (context, cryptoDataProvider, child) {
-                    if (cryptoDataProvider.isloading == true) {
-                      return const Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                        ),
-                      );
-                    } else {
-                      return ListView.builder(
+              ),
+              SizedBox(
+                height: 2.h,
+              ),
+              Consumer<CryptoDataProvider>(
+                builder: (context, cryptoDataProvider, child) {
+                  if (cryptoDataProvider.isloading == true) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                      ),
+                    );
+                  } else {
+                    log(cryptoDataProvider.cryptoData.length.toString());
+                    return Expanded(
+                      child: ListView.builder(
                         itemCount: cryptoDataProvider.cryptoData.length,
                         physics: const BouncingScrollPhysics(),
                         shrinkWrap: true,
@@ -82,6 +86,7 @@ class _CryptoPulseState extends State<CryptoPulse> {
                           CryptoDataModel currentCryptoData =
                               cryptoDataProvider.cryptoData[index];
                           return ListTile(
+                            contentPadding: EdgeInsets.zero,
                             leading: CircleAvatar(
                               radius: 5.w,
                               backgroundColor: Colors.white12,
@@ -95,14 +100,23 @@ class _CryptoPulseState extends State<CryptoPulse> {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
+                            trailing: Text(
+                              currentCryptoData.currentPrice!
+                                  .toStringAsFixed(2),
+                              style: TextStyle(
+                                color: currentCryptoData.priceChange24! > 0
+                                    ? Colors.green
+                                    : Colors.red,
+                              ),
+                            ),
                           );
                         },
-                      );
-                    }
-                  },
-                ),
-              ],
-            ),
+                      ),
+                    );
+                  }
+                },
+              ),
+            ],
           ),
         ),
       ),
