@@ -6,6 +6,8 @@ import '../../Model/cryptoDataModel.dart';
 class CryptoDataProvider with ChangeNotifier {
   bool isloading = true;
   List<CryptoDataModel> cryptoData = [];
+  CryptoDataModel currentCrypto = CryptoDataModel();
+  bool fetchingCurrentCrypto = true;
 
   CryptoDataProvider() {
     fetchData();
@@ -24,5 +26,19 @@ class CryptoDataProvider with ChangeNotifier {
     cryptoData = temp;
     isloading = false;
     notifyListeners();
+  }
+
+  updateFetchingCurrentCryptoStatus(bool data) {
+    fetchingCurrentCrypto = data;
+    notifyListeners();
+  }
+
+  fetchingCryptoByID(String id) {
+    updateFetchingCurrentCryptoStatus(true);
+    CryptoDataModel crypto =
+        cryptoData.where((element) => element.id == id).toList()[0];
+    currentCrypto = crypto;
+    notifyListeners();
+    updateFetchingCurrentCryptoStatus(false);
   }
 }
