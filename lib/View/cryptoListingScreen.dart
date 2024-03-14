@@ -34,17 +34,15 @@ class _CryptoListScreenState extends State<CryptoListScreen> {
                   ),
                 );
               } else {
-                return Expanded(
-                  child: ListView.builder(
-                    itemCount: cryptoDataProvider.cryptoData.length,
-                    physics: const BouncingScrollPhysics(),
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      CryptoDataModel currentCryptoData =
-                          cryptoDataProvider.cryptoData[index];
-                      return CryptoTile(currentCryptoData: currentCryptoData);
-                    },
-                  ),
+                return ListView.builder(
+                  itemCount: cryptoDataProvider.cryptoData.length,
+                  physics: const BouncingScrollPhysics(),
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    CryptoDataModel currentCryptoData =
+                        cryptoDataProvider.cryptoData[index];
+                    return CryptoTile(currentCryptoData: currentCryptoData);
+                  },
                 );
               }
             },
