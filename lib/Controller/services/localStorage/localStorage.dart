@@ -3,7 +3,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalStorage {
-    static Future<bool> addToWishlist(String id) async {
+  static Future<bool> addToWishlist(String id) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     List<String> wishlist = sharedPreferences.getStringList("wishlist") ?? [];
     wishlist.add(id);

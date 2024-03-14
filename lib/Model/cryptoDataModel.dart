@@ -31,7 +31,6 @@ class CryptoDataModel {
     this.circulatingSupply,
     this.ath,
     this.atl,
-    // required this.addedToWishlist,
   });
 
   factory CryptoDataModel.fromJSON(Map<String, dynamic> map) {

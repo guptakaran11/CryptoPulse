@@ -75,8 +75,9 @@ class _CryptoDataScreenState extends State<CryptoDataScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CryptoDataProvider>(builder: (context, cryptoData, child) {
-      if (cryptoData.fetchingCurrentCrypto == true) {
+    return Consumer<CryptoDataProvider>(
+        builder: (context, cryptoDataProvider, child) {
+      if (cryptoDataProvider.fetchingCurrentCrypto == true) {
         return const Scaffold(
           body: Center(
             child: CircularProgressIndicator(
@@ -100,9 +101,17 @@ class _CryptoDataScreenState extends State<CryptoDataScreen> {
             ),
             actions: [
               IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.bookmark_border,
+                onPressed: () {
+                  cryptoDataProvider.updateWishlist(
+                      cryptoDataProvider.currentCrypto.id!,
+                      cryptoDataProvider.currentCrypto);
+                },
+                icon: Icon(
+                  cryptoDataProvider.wishlist
+                              .contains(cryptoDataProvider.currentCrypto.id!) ==
+                          true
+                      ? Icons.bookmark
+                      : Icons.bookmark_border,
                   color: Colors.white,
                 ),
               ),
@@ -111,14 +120,14 @@ class _CryptoDataScreenState extends State<CryptoDataScreen> {
               children: [
                 CircleAvatar(
                   child: Image.network(
-                    cryptoData.currentCrypto.image!,
+                    cryptoDataProvider.currentCrypto.image!,
                   ),
                 ),
                 SizedBox(
                   width: 3.w,
                 ),
                 Text(
-                  cryptoData.currentCrypto.name!,
+                  cryptoDataProvider.currentCrypto.name!,
                   style: const TextStyle(
                     overflow: TextOverflow.ellipsis,
                     fontSize: 20,
@@ -130,7 +139,58 @@ class _CryptoDataScreenState extends State<CryptoDataScreen> {
             ),
           ),
           body: ListView(
-            children: [],
+            children: [
+              cryptoGraph(context),
+              SizedBox(
+                height: 3.h,
+              ),
+              GridView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 3.w,
+                  vertical: 2.h,
+                ),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 2.h,
+                  childAspectRatio: 2.5,
+                  crossAxisSpacing: 2.h,
+                ),
+                itemCount: 8,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return Column(
+                    crossAxisAlignment: index % 2 == 0
+                        ? CrossAxisAlignment.start
+                        : CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        getCryptoDataTitles(index),
+                        style: TextStyle(
+                          fontSize: 15.sp,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 1.h,
+                      ),
+                      Text(
+                        getCryptoDataValue(
+                            cryptoDataProvider.currentCrypto, index),
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                          color: Colors.white38,
+                          fontWeight: FontWeight.w600,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ],
           ),
         );
       }
@@ -150,18 +210,17 @@ class _CryptoDataScreenState extends State<CryptoDataScreen> {
               trackballBehavior: trackBallBehavior,
               crosshairBehavior: crosshairBehavior,
               primaryXAxis: const DateTimeAxis(
-                isVisible: true,
+                isVisible: false,
                 borderColor: Colors.transparent,
               ),
               primaryYAxis: NumericAxis(
                 numberFormat: NumberFormat.compact(),
-                isVisible:
-                    true, // i change it false to true to show the graph borders
+                isVisible: true,
               ),
               plotAreaBorderWidth: 0,
               series: <AreaSeries>[
                 AreaSeries<CryptoGraphData, dynamic>(
-                  enableTooltip: true, // same here as x axis
+                  enableTooltip: true,
                   color: Colors.transparent,
                   borderColor: const Color(0xff1ab7c3),
                   borderWidth: 2,
@@ -174,6 +233,9 @@ class _CryptoDataScreenState extends State<CryptoDataScreen> {
               ],
             );
           }),
+        ),
+        SizedBox(
+          height: 1.5.h,
         ),
         // ! Crypto Data Graph Buttons function
 

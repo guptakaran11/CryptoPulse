@@ -1,8 +1,12 @@
+// ignore_for_file: file_names
+
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+
+import 'package:cryptopulse/View/cryptoDataScreen.dart';
 
 import '../Controller/provider/cryptoProvider.dart';
 import '../Model/cryptoDataModel.dart';
@@ -24,94 +28,74 @@ class _CryptoListScreenState extends State<CryptoListScreen> {
             horizontal: 5.w,
             vertical: 1.h,
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Hello! 👋',
-                style: TextStyle(
-                  fontSize: 30,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(
-                height: 2.h,
-              ),
-              Consumer<CryptoDataProvider>(
-                builder: (context, cryptoDataProvider, child) {
-                  if (cryptoDataProvider.isloading == true) {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                      ),
-                    );
-                  } else {
-                    log(cryptoDataProvider.cryptoData.length.toString());
-                    return NotificationListener(
-                      onNotification: (dynamic onScrollNotification) {
-                        if (onScrollNotification is ScrollEndNotification) {
-                          final before =
-                              onScrollNotification.metrics.extentBefore;
-                          final end =
-                              onScrollNotification.metrics.maxScrollExtent;
-                          if (before == end) {
-                            context.read<CryptoDataProvider>().fetchData();
-                            GestureDetector(
-                              onTap: () {
-                                context.read<CryptoDataProvider>().cryptoData;  // i add this code so test first before run it
-                              },
-                            );
-                            return true;
-                          }
-                          return false;
-                        }
-                        return false;
-                      },
-                      child: Expanded(
-                        child: ListView.builder(
-                          itemCount: cryptoDataProvider.cryptoData.length,
-                          physics: const BouncingScrollPhysics(),
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            CryptoDataModel currentCryptoData =
-                                cryptoDataProvider.cryptoData[index];
-                            return InkWell(
-                              child: ListTile(
-                                contentPadding: EdgeInsets.zero,
-                                leading: CircleAvatar(
-                                  radius: 5.w,
-                                  backgroundColor: Colors.white12,
-                                  child:
-                                      Image.network(currentCryptoData.image!),
-                                ),
-                                title: Text(
-                                  currentCryptoData.name!,
-                                  style: const TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                trailing: Text(
-                                  currentCryptoData.currentPrice!
-                                      .toStringAsFixed(2),
-                                  style: TextStyle(
-                                    color: currentCryptoData.priceChange24! > 0
-                                        ? Colors.green
-                                        : Colors.red,
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    );
-                  }
-                },
-              ),
-            ],
+          child: Consumer<CryptoDataProvider>(
+            builder: (context, cryptoDataProvider, child) {
+              if (cryptoDataProvider.isloading == true) {
+                return const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                  ),
+                );
+              } else {
+                return Expanded(
+                  child: ListView.builder(
+                    itemCount: cryptoDataProvider.cryptoData.length,
+                    physics: const BouncingScrollPhysics(),
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      CryptoDataModel currentCryptoData =
+                          cryptoDataProvider.cryptoData[index];
+                      return CryptoTile(currentCryptoData: currentCryptoData);
+                    },
+                  ),
+                );
+              }
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CryptoTile extends StatelessWidget {
+  final CryptoDataModel currentCryptoData;
+  const CryptoTile({super.key, required this.currentCryptoData});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CryptoDataScreen(
+              cryptoId: currentCryptoData.id!,
+            ),
+          ),
+        );
+      },
+      child: ListTile(
+        contentPadding: EdgeInsets.zero,
+        leading: CircleAvatar(
+          radius: 5.w,
+          backgroundColor: Colors.white12,
+          child: Image.network(currentCryptoData.image!),
+        ),
+        title: Text(
+          currentCryptoData.name!,
+          style: const TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        trailing: Text(
+          currentCryptoData.currentPrice!.toStringAsFixed(2),
+          style: TextStyle(
+            color: currentCryptoData.priceChange24! > 0
+                ? Colors.green
+                : Colors.red,
           ),
         ),
       ),
