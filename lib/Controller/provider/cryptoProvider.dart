@@ -35,7 +35,11 @@ class CryptoDataProvider with ChangeNotifier {
     } else {
       wishlist.add(id);
       int indexOfCrypto = cryptoData.indexOf(crypto);
-      cryptoData[indexOfCrypto].addedToWishlist = true;
+      if (indexOfCrypto != -1) {
+        cryptoData[indexOfCrypto].addedToWishlist = true;
+      } else {
+        log("Crypto not found in the list.");
+      }
       await LocalStorage.addToWishlist(id);
       notifyListeners();
     }
