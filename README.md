@@ -66,7 +66,7 @@ Please adhere to this project's `code of conduct`.
 
 #### Get all items
 
-```http
+```bash
   GET https://api.coingecko.com/api/v3/coins/markets
 ```
 
@@ -76,7 +76,7 @@ Please adhere to this project's `code of conduct`.
 
 #### Get item
 
-```http
+```bash
   GET https://api.coingecko.com/api/v3/coins/markets?vs_currency=$currency&order=market_cap_desc&per_page=$noOfCurrencies&page=1&sparkline=false&locale=en&x_cg_demo_api_key=$apiKey
 ```
 
